@@ -9,15 +9,15 @@ import {
 } from "react-router-dom";
 import Landing from "./Landing"
 import Quiz from "./Quiz"
-import Header from "./Header";
+// import Header from "./Header";
 
 function App() {
   return (
     <Router>
-      <Header />
+      {/* <Header /> */}
       <Routes>
-        {/* <Route path="/" element={<Landing />} /> */}
-        {/* <Route path="/quiz" element={<Quiz />} /> */}
+        <Route path="/" element={<Landing />} />
+        <Route path="/quiz" element={<Quiz />} />
       </Routes>
     </Router>
   );
