@@ -40,3 +40,43 @@
 .read-the-docs {
   color: #888;
 }
+
+/* Main container styling */
+.center-container {
+  display: flex;
+  flex-direction: column;  /* Stack elements vertically */
+  align-items: center;     /* Center elements horizontally */
+  justify-content: center; /* Center elements vertically */
+  height: 100vh;           /* Full viewport height to vertically center content */
+  text-align: center;      /* Center text within the container */
+  background-color: #333;  /* Optional: Dark background color to match your screenshot */
+  color: #f0f0f0;          /* Optional: Light text color */
+}
+
+/* Image styling */
+.centered-image {
+  max-width: 100%;         /* Limits image size to the container’s width */
+  height: auto;            /* Maintains aspect ratio */
+  margin-bottom: 20px;     /* Adds space between the image and the button */
+}
+
+/* Styling for the button */
+.start-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  margin-top: 20px;        /* Adds space between the button and any content above */
+  cursor: pointer;
+  background-color: #333;  /* Matches the background */
+  color: #f0f0f0;          /* Light text color */
+  border: none;
+  border-radius: 5px;
+}
+
+.start-button:hover {
+  background-color: #555;  /* Slightly lighter background on hover */
+}
+
+/* Optional styling to remove underline on link */
+.button-link {
+  text-decoration: none;
+}
