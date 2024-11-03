@@ -1,5 +1,8 @@
-import React, { useState } from "react";
-import { GoogleMap, useJsApiLoader, Marker } from "@react-google-maps/api";
+import { GoogleMap, useJsApiLoader } from "@react-google-maps/api";
+import {useState} from 'react';
+import Header from "./Header";
+import FinalScore from "./FinalScore";
+
 
 const containerStyle = {
     width: "400px",
@@ -12,35 +15,59 @@ const center = {
 };
 
 function Quiz() {
-    // header
-    <header>
-            <h1>Quiz Page</h1>
-            <nav>
-            <a href="#home">Home</a>
-        </nav>
-    </header>
 
     const { isLoaded } = useJsApiLoader({
       id: "google-map-script",
       googleMapsApiKey: "AIzaSyCkIR4KjZgI-gT2mEn8Ix_ZFBHkIQxR2S8", // Replace with your actual API key
 });
+    const [data, setData] = useState(null);
+    const [score, setScore] = useState(0);
+    const [questionsAnswered, setQuestionsAnswered] = useState(0);
+    // clickedonmap?
 
-const [markers, setMarkers] = useState([]);
 
 const handleClick = (event) => {
-    console.log(event.latLng.lat(), event.latLng.lng())
-};
+    console.log(data)
+    fetch (`http://127.0.0.1:5000/score?prompt_id=0&latitude=${event.latLng.lat()}&longitude=${event.latLng.lng()}`)
+        .then(response => response.json())
+        .then(json => {
+            setData(json);
+            setScore(score + json.score);
+        })
+        .catch(error => console.error(error));
+    
+}
+
+const nextButtonClick = () => {
+    setQuestionsAnswered(questionsAnswered+1)
+    console.log(questionsAnswered)
+}
+
+if (questionsAnswered >= 3) {
+    return <FinalScore/>
+    }
+
 return isLoaded ? (
-    <GoogleMap
-      mapContainerStyle={containerStyle}
-      center={center}
-      zoom={16}
-      onClick={handleClick}
-    >
-    </GoogleMap>
+    <div>
+        {<Header />}
+        <p>Total Score: {score}</p>
+        <GoogleMap
+        mapContainerStyle={containerStyle}
+        center={center}
+        zoom={16}
+        onClick={handleClick}
+        >
+        </GoogleMap>
+        <p>Score: {data?.score}</p>
+        <a href="/">
+        <button>Quit Quiz</button>
+        </a>
+        <button onClick={nextButtonClick}>Next Question</button>
+    </div>
 ) : (
     <></>
 );
+
 }
 
 export default Quiz;

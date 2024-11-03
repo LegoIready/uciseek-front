@@ -1,23 +1,17 @@
-// import React from 'react';
-// import { Link } from 'react-router-dom';
-// import { AppBar, Toolbar, Button, Typography } from '@mui/material';
+import { Link } from 'react-router-dom';
 
-// function Header() {
-//   return (
-//     <AppBar position="static">
-//       <Toolbar>
-//         <Typography variant="h6" style={{ flexGrow: 1 }}>
-//           My Website
-//         </Typography>
-//         <Button color="inherit" component={Link} to="/">
-//           Home
-//         </Button>
-//         <Button color="inherit" component={Link} to="/quiz">
-//           Quiz
-//         </Button>
-//       </Toolbar>
-//     </AppBar>
-//   );
-// }
+function Header() {
+  return (
+    <header className="header">
+      <div className="header-title"></div>
+      <nav className="nav">
+        <Link className="nav-link" to="/">Home</Link>
+      </nav>
+      <nav className="nav">
+        <Link className="nav-link" to="/quiz">Quiz</Link>
+      </nav>
+    </header>
+  );
+}
 
-// export default Header;
+export default Header;
