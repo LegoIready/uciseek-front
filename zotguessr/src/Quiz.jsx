@@ -1,12 +1,12 @@
-import { GoogleMap, useJsApiLoader } from "@react-google-maps/api";
-import {useState} from 'react';
-import Header from "./Header";
+import { GoogleMap, useJsApiLoader, Marker } from "@react-google-maps/api";
+import {useEffect, useState} from 'react';
 import FinalScore from "./FinalScore";
 
 
+//Should move containerStyle to index.css and import
 const containerStyle = {
-    width: "400px",
-    height: "400px",
+    width: "600px",
+    height: "300px",
 };
 
 const center = {
@@ -18,51 +18,96 @@ function Quiz() {
 
     const { isLoaded } = useJsApiLoader({
       id: "google-map-script",
-      googleMapsApiKey: "AIzaSyCkIR4KjZgI-gT2mEn8Ix_ZFBHkIQxR2S8", // Replace with your actual API key
+      googleMapsApiKey: import.meta.env.VITE_API_KEY, // Replace with your actual API key
 });
-    const [data, setData] = useState(null);
+    const [currentScore, setCurrentScore] = useState(0);
     const [score, setScore] = useState(0);
     const [questionsAnswered, setQuestionsAnswered] = useState(0);
     // clickedonmap?
+    const [markers, setMarkers] = useState([]);
+    const [userClicked, setUserClicked] = useState(false);
 
+    const[locationImages, setLocationImages] = useState([]);
+    const[loadedImage, setLoadedImage] = useState(false);
+
+    const[isLoading, setIsLoading] = useState(false);
+
+    useEffect(() => {
+        if (!loadedImage) {
+            setIsLoading(true)
+            // Fetch data from the back end API to get location images
+            fetch('http://localhost:3001/getPrompts')
+            .then(setLoadedImage(true))
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+            setLocationImages(data)
+            setIsLoading(false)
+            console.log(locationImages[questionsAnswered])
+        })
+        }
+    });
 
 const handleClick = (event) => {
-    console.log(data)
-    fetch (`http://127.0.0.1:5000/score?prompt_id=0&latitude=${event.latLng.lat()}&longitude=${event.latLng.lng()}`)
+    console.log(currentScore)   
+    if (!userClicked) {
+        fetch (`http://127.0.0.1:3001/score?prompt_id=${locationImages[questionsAnswered].id}&latitude=${event.latLng.lat()}&longitude=${event.latLng.lng()}`)
         .then(response => response.json())
         .then(json => {
-            setData(json);
+            setUserClicked(true);
+            console.log(json)
+            setMarkers((prevItems) => [...prevItems, {id: 1, position: {lat: event.latLng.lat(), lng: event.latLng.lng()}}])
+            setMarkers((prevItems) => [...prevItems, {id: 2, position: {lat: json.latitude, lng: json.longitude}}])
+            setCurrentScore(json.score);
             setScore(score + json.score);
+            console.log(markers)
         })
         .catch(error => console.error(error));
-    
+    }
 }
 
 const nextButtonClick = () => {
     setQuestionsAnswered(questionsAnswered+1)
+    setUserClicked(false)
     console.log(questionsAnswered)
+    setMarkers([])
 }
 
 if (questionsAnswered >= 3) {
-    return <FinalScore/>
+    return (<FinalScore score={Math.round(score)}>
+            </FinalScore>)
     }
 
-return isLoaded ? (
-    <div>
-        {<Header />}
-        <p>Total Score: {score}</p>
+return (isLoaded && !isLoading) ? (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100vh' // Optional: to make it full height of the viewport
+      }}
+    >
+        <p>Guess this Place...</p>
+        <img src={locationImages[questionsAnswered].url} width= "600"></img>
+        <p>Total Score: {Math.round(score)}</p>
         <GoogleMap
         mapContainerStyle={containerStyle}
         center={center}
-        zoom={16}
+        zoom={15}
         onClick={handleClick}
         >
+            {markers.map(marker => (
+                <Marker key={marker.id} position={marker.position} />
+            ))}
         </GoogleMap>
-        <p>Score: {data?.score}</p>
+        <p>Score: {Math.round(currentScore)}</p>
+        <div>
         <a href="/">
         <button>Quit Quiz</button>
         </a>
         <button onClick={nextButtonClick}>Next Question</button>
+        </div>
     </div>
 ) : (
     <></>

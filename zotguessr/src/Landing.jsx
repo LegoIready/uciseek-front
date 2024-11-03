@@ -1,14 +1,22 @@
-import Header from "./Header";
+// import logo from '.public/logo.jpg';
 
 function Landing() {
     return (
-        <div>
-        {<Header />}
-      <h1>Home Page</h1>
+      <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100vh' // Optional: to make it full height of the viewport
+      }}
+      >
+      <h1>UCIseek</h1>
+      <img src="/Logo.jpg" height="300" width="300"></img>
       <a href="/quiz">
-        <button>Start Quiz</button>
+        <button>Start Seeking</button>
       </a>
-      <p>Welcome to the Home Page.</p>
+      <p>Welcome to UCIseek!</p>
     </div>
     );
 }
