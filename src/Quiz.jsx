@@ -36,7 +36,7 @@ function Quiz() {
         if (!loadedImage) {
             setIsLoading(true)
             // Fetch data from the back end API to get location images
-            fetch('http://localhost:3001/getPrompts')
+            fetch('https://uciseek-back.vercel.app/getPrompts')
             .then(setLoadedImage(true))
             .then(response => response.json())
             .then(data => {
@@ -51,7 +51,7 @@ function Quiz() {
 const handleClick = (event) => {
     console.log(currentScore)   
     if (!userClicked) {
-        fetch (`http://127.0.0.1:3001/score?prompt_id=${locationImages[questionsAnswered].id}&latitude=${event.latLng.lat()}&longitude=${event.latLng.lng()}`)
+        fetch (`https://uciseek-back.vercel.app/score?prompt_id=${locationImages[questionsAnswered].id}&latitude=${event.latLng.lat()}&longitude=${event.latLng.lng()}`)
         .then(response => response.json())
         .then(json => {
             setUserClicked(true);
